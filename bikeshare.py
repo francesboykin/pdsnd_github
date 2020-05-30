@@ -6,6 +6,7 @@ from pathlib import Path
 import datetime # operations to parse dates
 import calendar
 import os.path
+import time
 pd.__version__
 
 
@@ -38,7 +39,7 @@ def get_city():
             return city.lower()
         else:
             print('That is not a valid answer. Please try again.')
-            
+
 
 def get_raw_city_data(city):
     '''Read CSV (comma-separated) file into DataFrame
@@ -49,22 +50,22 @@ def get_raw_city_data(city):
     '''
     raw_city_data = pd.read_csv(city_data[city])
     return raw_city_data
-  
+
 def clean_data(raw_city_data):
     '''Read CSV (comma-separated) file into DataFrame
     Args:
         (obj) raw_city_data from get_raw_city_data(city)
     Returns:
-        (obj) parsed raw_city_data   
+        (obj) parsed raw_city_data
     '''
 
     raw_city_data['Journey'] = raw_city_data['Start Station'].str.cat(raw_city_data['End Station'], sep=' to ')
-    
+
     #format column names
     raw_city_data.columns = [x.strip().replace(' ', '_') for x in raw_city_data.columns]
     #make all headers lowercase
     raw_city_data.columns=map(str.lower, raw_city_data.columns)
-    
+
     return raw_city_data
 
 def parse_data(raw_city_data):
@@ -72,9 +73,9 @@ def parse_data(raw_city_data):
     Args:
         (obj) raw_city_data from get_raw_city_data(city)
     Returns:
-        (obj) parsed raw_city_data   
-    ''' 
-    # parse datetime 
+        (obj) parsed raw_city_data
+    '''
+    # parse datetime
     raw_city_data['start_time'] = pd.to_datetime(raw_city_data['start_time'])
     raw_city_data['end_time'] = pd.to_datetime(raw_city_data['end_time'])
 
@@ -83,13 +84,13 @@ def parse_data(raw_city_data):
     raw_city_data['month_name'] = raw_city_data['start_time'].dt.month.apply(lambda x: calendar.month_name[x])
     raw_city_data['day_of_week'] = raw_city_data['start_time'].dt.weekday
     raw_city_data['day_of_week_name'] = raw_city_data['start_time'].dt.weekday.apply(lambda x: calendar.day_name[x])
-    raw_city_data['hour'] = raw_city_data['start_time'].dt.hour 
+    raw_city_data['hour'] = raw_city_data['start_time'].dt.hour
 
     return raw_city_data
 
 
 def filter_data(raw_city_data):
-    '''Asks the user for a time period and filter the basic processed data according 
+    '''Asks the user for a time period and filter the basic processed data according
         to the specified filter and returns the filtered data and the filter name.
     Args:
         (obj) basic processed data
@@ -98,7 +99,7 @@ def filter_data(raw_city_data):
     '''
 
     # loop for handling invalid entries
-    while True: 
+    while True:
         time_period = input('Would you like to filter the data by month, day, or not at all? Type "none" for no time filter.\n').lower()
         print('Great! Time period selected: %s' % time_period)
         if time_period in ('month', 'day', 'none'):
@@ -113,11 +114,11 @@ def filter_data(raw_city_data):
                 print('Great! We\'ll use %s.' % month_selection)
                 month_selection = months.get(month_selection)
                 filtered_city_data = raw_city_data[raw_city_data['start_time'].dt.month==month_selection]
-                
+
                 break
 
             print('That is not a valid answer. Please try again.')
-            
+
     elif time_period =='day':
         while True:
             day_selection = input('Which day of the week? \n').lower()
@@ -128,7 +129,7 @@ def filter_data(raw_city_data):
                 break
 
             print('That is not a valid answer. Please try again.')
-                
+
     else:
         filtered_city_data = raw_city_data # for none option
 
@@ -143,7 +144,7 @@ def display_statistics(filtered_city_data, city):
     '''
     #Print heading that specifies selected city, filters
     print('\n')
-    print('-------------------------------------')    
+    print('-------------------------------------')
 
 
     """Display statistics on the most popular stations and trip."""
@@ -173,8 +174,8 @@ def display_statistics(filtered_city_data, city):
     user_types=filtered_city_data['user_type'].value_counts()
     print(user_types)
     print('\n')
-    
-    if city == 'chicago' or city == 'new york': 
+
+    if city == 'chicago' or city == 'new york':
         user_statistics(filtered_city_data)
 
         #city.lower()
@@ -193,7 +194,7 @@ def display_month_day_hour_statistics(filtered_city_data):
     print('-------------------------------------')
     # display total number of trips for this city and filter
     #print('Total trips: ', (filtered_city_data['Start_Time'].count()))
-    
+
     """Display statistics on the most frequent times of travel."""
     print('\nTrip Info:')
     # display the most common month
@@ -203,7 +204,7 @@ def display_month_day_hour_statistics(filtered_city_data):
     # display the most common day of week
     popular_day = filtered_city_data['day_of_week_name'].mode()[0]
     print(popular_day, 'is the day of the week with the highest ridership')
-        
+
     # display the most common hour (from 0 to 23)
     popular_hour = filtered_city_data['hour'].mode()[0]
     print(popular_hour, 'is the most common trip start hour')
@@ -213,7 +214,7 @@ def user_statistics(filtered_city_data):
     Args:
         (obj) filtered_city_data
     Returns:
-        user statistics for chicago and nyc data only 
+        user statistics for chicago and nyc data only
     '''
     #Display counts of gender
     #Display earliest, most recent, and most common year of birth
@@ -226,11 +227,11 @@ def user_statistics(filtered_city_data):
     print('The oldest birth year in the dataset is listed as {}.\nThe most recent birth year in the dataset is {}.'
           '\nThe most common birth year in the dataset is {}.'.format(earliest, recent, mode))
     print('\n')
- 
+
 
 def display_data(filtered_city_data, row):
     """
-    Asks the user if they would you like to view individual trip data and loads the raw data 
+    Asks the user if they would you like to view individual trip data and loads the raw data
     Args:
         (obj) filtered city_data
         ilocs
@@ -248,34 +249,36 @@ def display_data(filtered_city_data, row):
     else:
         print('That is not a valid answer. Please try again.')
         return display_data(filtered_city_data, row)
-      
+
 def main():
     """
     Loads analysis and data for the specified city and filters.
     """
-    # 1) pick a city   
+    # 1) pick a city
     city = get_city()
     print('Great! We\'ll use %s.' % city)
-    
+
     # 2) load data
     raw_city_data = get_raw_city_data(city)
-	
-		   
+
+
     #3) clean data
     clean_data(raw_city_data)
- 
+
     #4) parse data
     parse_data(raw_city_data)
-    
+
     #5) filter data
     filtered_city_data = filter_data(raw_city_data)
 
     #6) display statistics
+    print('\nCalculating User Stats...\n')
+    time.sleep(3)
     display_statistics(filtered_city_data, city)
-    
+
     #7) display statistics on most popular month and day overall
     display_month_day_hour_statistics(filtered_city_data)
-    
+
     #8) see data details
     see_data = display_data(filtered_city_data, row=76)
 
