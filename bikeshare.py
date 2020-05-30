@@ -111,7 +111,7 @@ def filter_data(raw_city_data):
         while True:
             month_selection = input('Select a month, January - June \n').lower()
             if month_selection.lower() in months:
-                print('Great! We\'ll use %s.' % month_selection)
+                print('Great! We\'ll use %s.' % month_selection.title())
                 month_selection = months.get(month_selection)
                 filtered_city_data = raw_city_data[raw_city_data['start_time'].dt.month==month_selection]
 
@@ -123,7 +123,7 @@ def filter_data(raw_city_data):
         while True:
             day_selection = input('Which day of the week? \n').lower()
             if day_selection.lower() in days:
-                print('Great! We\'ll use %s.' % day_selection)
+                print('Great! We\'ll use %s.' % day_selection.title())
                 day_selection = days.get(day_selection)
                 filtered_city_data = raw_city_data[raw_city_data['start_time'].dt.weekday==day_selection]
                 break
@@ -256,7 +256,7 @@ def main():
     """
     # 1) pick a city
     city = get_city()
-    print('Great! We\'ll use %s.' % city)
+    print('Great! We\'ll use %s.' % city.title())
 
     # 2) load data
     raw_city_data = get_raw_city_data(city)
