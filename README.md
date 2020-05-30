@@ -3,7 +3,7 @@
 ### Bikeshare Python Project - Udacity Programming for Data Science Nanodegree
 
 ### Description
-The Python program allows the user to explore an US bikeshare system database and retrieve statistics information from the database. The user is able filter the information by city (Washington DC, New York, and Chicago), month (January - June) and any weekday.  The user can see statistical information based on chosen requirements and has the option to look at individual record level data as well as repeat the process as many times as necessary.
+The Python program allows the user to explore an US bikeshare system database and retrieve statistics information from the database. The user is able filter the information by city (Washington DC, New York, and Chicago), month (January - June) and any weekday.  The user can see statistical information based on chosen requirements and has the option to look at individual record level data as well as repeat the process as many times as necessary.  Error handling is included to ensure smooth operation of the program.
 
 ### Files used
 * washington.csv
