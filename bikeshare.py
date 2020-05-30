@@ -48,6 +48,7 @@ def get_raw_city_data(city):
     Returns:
         raw_city_data df for the specified city's bikeshare data.
     '''
+    print('\nLoading Data...\n')
     raw_city_data = pd.read_csv(city_data[city])
     return raw_city_data
 
